@@ -29,7 +29,10 @@ class DefaultWordCount extends WordCount {
       .fromFile(textDocument)
       .getLines
       .toList
+      .map(_.replace('.', ' '))
+      .map(_.replace(',', ' '))
       .flatMap(line => line.split(' ').toList)
+      .filterNot(_.isEmpty)
       .groupBy(_.toLowerCase)
       .map { case (k, v) => Result(k, v.size) }
       .toList
