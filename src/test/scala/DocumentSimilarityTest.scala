@@ -1,7 +1,19 @@
+import akka.actor.ActorSystem
+import akka.actor.testkit.typed.scaladsl.ActorTestKit
+import org.scalatest.BeforeAndAfterAll
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class DocumentSimilarityTest extends AnyFlatSpec with FileUtil with Matchers {
+class DocumentSimilarityTest
+    extends AnyFlatSpec
+    with FileUtil
+    with Matchers
+    with BeforeAndAfterAll {
+
+  val testKit = ActorTestKit()
+  implicit val actorSystem: ActorSystem = testKit.system.classicSystem
+
+  override def afterAll(): Unit = testKit.shutdownTestKit()
 
   behavior of "DocumentSimilarity"
 
@@ -15,7 +27,7 @@ class DocumentSimilarityTest extends AnyFlatSpec with FileUtil with Matchers {
       List("Beta alpha, gamma delta. Alpha beta epsilon theta.")
     )
 
-    val result = DocumentSimilarity().similarity(file1, file2)
+    val result = DocumentSimilarity(WordCount()).similarity(file1, file2)
 
     result shouldBe 0.428571 +- 0.000001
   }

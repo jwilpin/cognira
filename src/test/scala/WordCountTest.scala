@@ -1,8 +1,20 @@
 import WordCount.Result
+import akka.actor.ActorSystem
+import akka.actor.testkit.typed.scaladsl.ActorTestKit
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import akka.actor.typed.scaladsl.adapter._
+import org.scalatest.BeforeAndAfterAll
+class WordCountTest
+    extends AnyFlatSpec
+    with FileUtil
+    with Matchers
+    with BeforeAndAfterAll {
 
-class WordCountTest extends AnyFlatSpec with FileUtil with Matchers {
+  val testKit = ActorTestKit()
+  implicit val actorSystem: ActorSystem = testKit.system.classicSystem
+
+  override def afterAll(): Unit = testKit.shutdownTestKit()
 
   behavior of "WordCount"
 

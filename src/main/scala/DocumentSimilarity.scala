@@ -1,3 +1,5 @@
+import akka.actor.ActorSystem
+
 import java.io.File
 
 trait DocumentSimilarity {
@@ -18,7 +20,7 @@ trait DocumentSimilarity {
 
 object DocumentSimilarity {
 
-  def apply(wordCount: WordCount = WordCount()): DocumentSimilarity =
+  def apply(wordCount: WordCount): DocumentSimilarity =
     new DefaultDocumentSimilarity(wordCount)
 }
 
@@ -35,6 +37,8 @@ class DefaultDocumentSimilarity(wordCount: WordCount)
 }
 
 object DocumentSimilarityApp extends App {
+  implicit val system: ActorSystem = ActorSystem("DocumentSimilarityApp")
+
   val fileName1 =
     args.headOption.getOrElse("src/main/resources/document_similarity_1.txt")
 
@@ -42,7 +46,8 @@ object DocumentSimilarityApp extends App {
     .getOrElse("src/main/resources/document_similarity_2.txt")
 
   val similarity =
-    DocumentSimilarity().similarity(new File(fileName1), new File(fileName2))
+    DocumentSimilarity(WordCount())
+      .similarity(new File(fileName1), new File(fileName2))
 
   println(similarity)
 }
